@@ -1,0 +1,63 @@
+schema: '2.0'
+stages:
+  stage_feature_extraction:
+    cmd: python3 ./featureization.py
+    deps:
+    - path: ./featureization.py
+      md5: 0e1fd35d922d10e44bd7737cd14fc010
+      size: 526
+    - path: data/IRIS.csv
+      md5: 9f44d5c52de2354fb45e9dcfc0e90b16
+      size: 4617
+    outs:
+    - path: data/iris_featurized.csv
+      md5: 5d1acc94b050c3cc64104dcff9e7389a
+      size: 4608
+  stage_split_test_train:
+    cmd: python3 ./split_test_train.py
+    deps:
+    - path: ./split_test_train.py
+      md5: 17c88ac40f80392f9725f82e490a402c
+      size: 644
+    - path: data/iris_featurized.csv
+      md5: 5d1acc94b050c3cc64104dcff9e7389a
+      size: 4608
+    outs:
+    - path: data/test.csv
+      md5: 8edf9daaa28c9eb40698eec9d7907831
+      size: 967
+    - path: data/train.csv
+      md5: b7189ee2132c84f0485c15eb6384a255
+      size: 3699
+  stage_train_kmeans:
+    cmd: python3 ./k_means.py
+    deps:
+    - path: ./k_means.py
+      md5: ff6c9878e1aa87542b86abcedcf136e5
+      size: 578
+    - path: data/test.csv
+      md5: 8edf9daaa28c9eb40698eec9d7907831
+      size: 967
+    - path: data/train.csv
+      md5: b7189ee2132c84f0485c15eb6384a255
+      size: 3699
+    outs:
+    - path: data/predict.txt
+      md5: 4eb093102a3cdffd77a03b45db344e3c
+      size: 491
+  stage_eval:
+    cmd: python3 ./eval.py
+    deps:
+    - path: ./eval.py
+      md5: a5e40076f0ecc390f9e48b15724d78fd
+      size: 509
+    - path: data/predict.txt
+      md5: 4eb093102a3cdffd77a03b45db344e3c
+      size: 491
+    - path: data/test.csv
+      md5: 8edf9daaa28c9eb40698eec9d7907831
+      size: 967
+    outs:
+    - path: data/eval.json
+      md5: 624ded54e2596db0c48f20e3c8229812
+      size: 31
