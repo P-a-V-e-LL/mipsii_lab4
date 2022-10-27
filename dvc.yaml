@@ -1,0 +1,32 @@
+stages:
+  stage_feature_extraction:
+    cmd: python3 ./featureization.py
+    deps:
+    - ./featureization.py
+    - data/IRIS.csv
+    outs:
+    - data/iris_featurized.csv
+  stage_split_test_train:
+    cmd: python3 ./split_test_train.py
+    deps:
+    - ./split_test_train.py
+    - data/iris_featurized.csv
+    outs:
+    - data/test.csv
+    - data/train.csv
+  stage_train_d3:
+    cmd: python3 ./d3.py
+    deps:
+    - ./d3.py
+    - data/test.csv
+    - data/train.csv
+    outs:
+    - data/predict.txt
+  stage_eval:
+    cmd: python3 ./eval.py
+    deps:
+    - ./eval.py
+    - data/predict.txt
+    - data/test.csv
+    metrics:
+    - data/eval.json
